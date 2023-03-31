@@ -3,8 +3,46 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { ReactNode } from 'react';
+import {
+  Box,
+  Flex,
+  Avatar,
+  Link,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
+  useDisclosure,
+  useColorModeValue,
+  Stack,
+  useColorMode,
+  Center,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@chakra-ui/react';
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+
+const NavLink = ({ children }: { children: ReactNode }) => (
+  <Link
+    px={2}
+    py={1}
+    rounded={'md'}
+    _hover={{
+      textDecoration: 'none',
+      bg: useColorModeValue('purple.200', 'purple.700'),
+    }}
+    href={'#'}>
+    {children}
+  </Link>
+);
 
 const Navbar = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+  const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <>
         <Head>
@@ -13,18 +51,95 @@ const Navbar = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>src/pages/index.tsx</code>
-          </p>
-          <div>
-           <ConnectButton />
-          </div>
-        </div>
+      <Box boxShadow="2xl" pb={5} bg={useColorModeValue('purple.200', 'purple.900')} px={4}>
+        <Flex h={20} alignItems={'center'} justifyContent={'space-between'} fontSize={16}>
+          <Box as='b' top={'25px'} left={'70px'} height={'45px'} width={'148px'} textColor={'white.200'} fontWeight={600} lineHeight={'45.35px'} fontSize={'36px'} fontStyle={'outfit'} fontFamily={'outfit'}>MUSE.IO</Box>
+
+
+          <Flex fontFamily={'outfit'} fontStyle={'normal'} fontWeight={400} lineHeight={'20.16px'}px={20} textColor={'white.900'} display={{ base: 'none', md: 'flex' }} ml={10} position={'relative'} textIndent={'inherit'}>
+            <DesktopNav />
+          </Flex>
+
+          <Flex alignItems={'center'}>
+            <Stack direction={'row'} spacing={7} px={10}>
+              <Button mx={5} onClick={toggleColorMode}>
+                {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+              </Button>
+
+              <Menu>
+              <ConnectButton
+            
+              />
+              
+              </Menu>
+              
+            </Stack>
+          </Flex>
+        </Flex>
+      </Box>
 
         </>
     );
 }
+
+const DesktopNav = () => {
+  const linkColor = useColorModeValue('gray.600', 'gray.200');
+  const linkHoverColor = useColorModeValue('gray.800', 'white');
+  const popoverContentBgColor = useColorModeValue('white', 'gray.800');
+
+  return (
+    <Stack direction={'row'} spacing={4}>
+      {NAV_ITEMS.map((navItem) => (
+        <Box key={navItem.label}>
+          <Popover trigger={'hover'} placement={'bottom-start'}>
+            <PopoverTrigger>
+              <Link
+                p={2}
+                href={navItem.href ?? '#'}
+                fontSize={'sm'}
+                fontWeight={500}
+                color={linkColor}
+                _hover={{
+                  textDecoration: 'none',
+                  color: linkHoverColor,
+                }}>
+                {navItem.label}
+              </Link>
+            </PopoverTrigger>
+
+          
+          </Popover>
+        </Box>
+      ))}
+    </Stack>
+  );
+};
+interface NavItem {
+  label: string;
+  subLabel?: string;
+  children?: Array<NavItem>;
+  href?: string;
+}
+
+const NAV_ITEMS: Array<NavItem> = [
+  {
+    label: 'Home',
+    href: '/',
+    
+  },
+  {
+    label: 'Explore',
+    href: '/market',
+    
+  },
+  {
+    label: 'Profile',
+    href: '#',
+  },
+  {
+    label: 'Contact',
+    href: '#',
+  },
+];
 
 export default Navbar;

@@ -1,64 +1,65 @@
-import type { NextPage } from "next";
-import styles from '@/styles/Home.module.css';
 
-const LandingPage: NextPage = () => {
+import styles from '@/styles/Home.module.css'
+import { Navbar, Footer,Hero } from '@/components'
+import '@rainbow-me/rainbowkit/styles.css';
+import { config } from 'process';
+import {
+  darkTheme,
+  getDefaultWallets,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { sepolia, goerli, polygonMumbai } from 'wagmi/chains';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { publicProvider } from 'wagmi/providers/public';
+
+
+const ALCHEMY_ID: string = process.env.ALCHEMY_ID || '';
+const { chains, provider } = configureChains(
+  [sepolia, goerli, polygonMumbai, ],
+  [
+    alchemyProvider({ apiKey: ALCHEMY_ID }),
+    publicProvider()
+  ]
+);
+
+const { connectors } = getDefaultWallets({
+  appName: 'Muse',
+  chains
+});
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider
+})
+
+
+export default function Home() {
+  
+
   return (
-    <div className={styles.landingPage}>
-      <div className={styles.walletConnectButton}>
-        <img
-          className={styles.walletConnectButtonChild}
-          alt=""
-          src="/frame-1.svg"
-        />
-        <div className={styles.walletConnect}>Wallet Connect</div>
-      </div>
-      <div className={styles.createButton}>
-        <div className={styles.createButtonChild} />
-        <div className={styles.create}>Create</div>
-      </div>
-      <div className={styles.buttonExplore}>
-        <div className={styles.button}>
-          <div className={styles.createButtonChild} />
-        </div>
-        <div className={styles.explore}>Explore</div>
-      </div>
-      <div className={styles.landingPageChild} />
-      <b className={styles.maintext}>
-        <p className={styles.listenCollectAnd}>{`Listen, collect and sell `}</p>
-        <p className={styles.extraordinaryMusic}>{`extraordinary music `}</p>
-        <p className={styles.listenCollectAnd}>NFT’S.</p>
-      </b>
-      <div className={styles.sidetext}>
-        <p className={styles.listenCollectAnd}>
-          A digital platform for buying, selling, and discovering exclusive
-          music-related non-fungible tokens.
-        </p>
-        <p className={styles.listenCollectAnd}>{` `}</p>
-        <p
-          className={styles.listenCollectAnd}
-        >{`Discover and collect unique music assets created by various artists, `}</p>
-        <p className={styles.listenCollectAnd}>
-          and trade them with others using cryptocurrency.
-        </p>
-      </div>
-      <div className={styles.radiantsmall} />
-      <div className={styles.radiantbig} />
-      <img className={styles.radiantIcon} alt="" src="/radiant.svg" />
-      <div className={styles.menu}>
-        <div className={styles.menu1}>
-          <div className={styles.logo}>MUSE.IO</div>
-          <div className={styles.homeExploreProfile}>
-            Home Explore Profile Community Contact
-          </div>
-        </div>
-        <img
-          className={styles.searchButtonIcon}
-          alt=""
-          src="/search-button.svg"
-        />
-      </div>
-    </div>
-  );
-};
+    <>
+     <WagmiConfig client={wagmiClient}>
+      <RainbowKitProvider  theme={darkTheme({
+      accentColor: '#7b3fe4',
+      accentColorForeground: 'white',
+      borderRadius: 'small',
+      fontStack: 'system',
+      overlayBlur: 'small',
+    })}
+    coolMode modalSize="compact" chains={chains}>
+        
+      <main className={styles.main}>
+      <Navbar/>
 
-export default LandingPage;
+      <Hero />
+        
+      <Footer />
+      </main>
+      </RainbowKitProvider>
+    </WagmiConfig>
+     
+    </>
+  )
+}

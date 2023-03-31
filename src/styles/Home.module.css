@@ -161,6 +161,10 @@
   top: 0.67rem;
   left: 32rem;
   font-size: var(--font-size-base);
+  float: right;
+  color: #0a0a0a;
+  text-justify: 5px;
+  text-indent: 50px;
 }
 .menu1 {
   position: absolute;
