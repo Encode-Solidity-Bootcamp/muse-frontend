@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-page-custom-font */
-import Head from 'next/head';
+import Head from 'next/head'
 import {
   Box,
   Heading,
@@ -10,7 +10,7 @@ import {
   Icon,
   useColorModeValue,
   createIcon,
-} from '@chakra-ui/react';
+} from '@chakra-ui/react'
 
 export default function CallToActionWithAnnotation() {
   return (
@@ -27,30 +27,33 @@ export default function CallToActionWithAnnotation() {
           as={Box}
           textAlign={'center'}
           spacing={{ base: 8, md: 14 }}
-          py={{ base: 20, md: 36 }}>
+          py={{ base: 20, md: 36 }}
+        >
           <Heading
             fontWeight={700}
             fontSize={'72px'}
             textAlign={'center'}
             fontFamily={'outfif'}
-            lineHeight={'91px'}>
-            Listen, Collect and Sell  <br />
+            lineHeight={'91px'}
+          >
+            Listen, Collect and Sell <br />
             <Text as={'span'} color={'purple.500'}>
-             Music NFTS
+              Music NFTS
             </Text>
           </Heading>
           <Text color={'gray.500'}>
-          A digital platform for buying, selling, and discovering exclusive 
-          music-related non-fungible tokens.Discover and 
-          collect unique music assets created by various artists,and trade them with others using cryptocurrency.
-
+            A digital platform for buying, selling, and discovering exclusive
+            music-related non-fungible tokens.Discover and collect unique music
+            assets created by various artists,and trade them with others using
+            cryptocurrency.
           </Text>
           <Stack
             direction={'row'}
             spacing={3}
             align={'center'}
             alignSelf={'center'}
-            position={'relative'}>
+            position={'relative'}
+          >
             <Button
               colorScheme={'purple'}
               bg={'purple.400'}
@@ -58,28 +61,25 @@ export default function CallToActionWithAnnotation() {
               px={6}
               _hover={{
                 bg: 'purple.500',
-              }}>
+              }}
+            >
               Create
             </Button>
             <Button
               colorScheme={'purple'}
-             
-              
               bg={'purple.300'}
               rounded={'full'}
-              
               _hover={{
                 bg: 'purple.500',
-              }}>
+              }}
+            >
               Explore
             </Button>
-          
-          
           </Stack>
         </Stack>
       </Container>
     </>
-  );
+  )
 }
 
 const Arrow = createIcon({
@@ -93,4 +93,4 @@ const Arrow = createIcon({
       fill="currentColor"
     />
   ),
-});
+})
