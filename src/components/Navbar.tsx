@@ -163,10 +163,10 @@ const NAV_ITEMS: Array<NavItem> = [
     label: 'Profile',
     href: '/profile',
   },
-  // {
-  //   label: 'Contact',
-  //   href: '#',
-  // },
+  {
+    label: 'Our Artistes',
+    href: '/artistes',
+  },
 ]
 
 export default Navbar
