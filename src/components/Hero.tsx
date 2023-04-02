@@ -10,9 +10,24 @@ import {
   Icon,
   useColorModeValue,
   createIcon,
+  Center,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
 } from '@chakra-ui/react'
+import Link from 'next/link'
 
 export default function CallToActionWithAnnotation() {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
     <>
       <Head>
@@ -58,27 +73,81 @@ export default function CallToActionWithAnnotation() {
               colorScheme={'purple'}
               bg={'purple.400'}
               rounded={'full'}
+              onClick={onOpen}
               px={6}
               _hover={{
                 bg: 'purple.500',
               }}
             >
-              Create
+              Artiste
             </Button>
-            <Button
+            <Link href={'/market'}><Button
               colorScheme={'purple'}
               bg={'purple.300'}
               rounded={'full'}
+              
               _hover={{
                 bg: 'purple.500',
               }}
             >
               Explore
             </Button>
+            </Link>
+            
           </Stack>
         </Stack>
       </Container>
+
+      <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Signup as an Artiste</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+          <FormControl id="image" >
+        <FormLabel> Image</FormLabel>
+        <Stack direction={['column', 'row']} spacing={6}>
+          <Center>
+          <Input
+          placeholder="Image"
+          _placeholder={{ color: 'gray.500' }}
+          type="file"
+        />
+            
+          </Center>
+         
+        </Stack>
+      </FormControl>
+      <FormControl id="userName" isRequired>
+        <FormLabel>Name</FormLabel>
+        <Input
+          placeholder="song title"
+          _placeholder={{ color: 'gray.500' }}
+          type="text"
+        />
+      </FormControl>
+      
+      <FormControl id="description" isRequired>
+        <FormLabel>About you</FormLabel>
+        <Input
+          placeholder="you you you!"
+          _placeholder={{ color: 'gray.500' }}
+          type="text"
+        />
+      </FormControl>
+
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant='ghost'>SignUp</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
+
   )
 }
 

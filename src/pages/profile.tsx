@@ -1,5 +1,5 @@
 import styles from '@/styles/Home.module.css'
-import { Navbar, Footer, NftCard, CreateCollection } from '@/components'
+import { Navbar, Footer, CreateCollection, CustomNftCard } from '@/components'
 
 import {
   Box,
@@ -89,7 +89,7 @@ export default function MarketPlace() {
             </TabList>
             <TabPanels>
                 <TabPanel>
-                <NftCard></NftCard>
+                <CustomNftCard/>
                 </TabPanel>
                 <TabPanel mt={-7}>
                 <CreateCollection  />
@@ -97,7 +97,7 @@ export default function MarketPlace() {
                 {/* Transaction History */}
                 <TabPanel>
                 <TableContainer>
-  <Table size='sm'>
+  <Table size={'md'} variant='striped' align="center" colorScheme='teal' width={'50%'}>
     <Thead>
       <Tr>
         <Th>Activity</Th>

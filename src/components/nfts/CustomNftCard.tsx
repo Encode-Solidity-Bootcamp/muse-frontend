@@ -8,6 +8,8 @@ import {
     Stack,
     Image,
     Button,
+    Input,
+    SimpleGrid,
    
   } from '@chakra-ui/react'
   import dynamic from 'next/dynamic'
@@ -17,10 +19,13 @@ import {
   const IMAGE = 'https://cdn.punchng.com/wp-content/uploads/2022/12/18034549/Davido-1.jpg'
 
 
-export default function NftCard() {
+export default function CustomNftCard() {
   return (
     <>
-         <Box
+         
+              <SimpleGrid  columns={4} spacing='5px'>
+              <Box
+              
                 role={'group'}
                 p={6}
                 mx={9}
@@ -33,7 +38,7 @@ export default function NftCard() {
                 boxShadow={'2xl'}
                 rounded={'lg'}
                 pos={'relative'}
-                height={'550px'}
+                height={'600px'}
                 zIndex={1}
               >
                 <Box
@@ -81,7 +86,7 @@ export default function NftCard() {
                     fontFamily={'body'}
                     fontWeight={500}
                   >
-                    Assurance{' '}
+                   Stand Strong{' '}
                   </Heading>
                   <Stack direction={'row'} align={'center'}>
                     <Text fontWeight={800} fontSize={'xl'}>
@@ -102,10 +107,13 @@ export default function NftCard() {
                     width={'300px'}
                   />
                   <center>
-                    <Button mt={6}>Buy</Button>
+                    <Input py={5} mt={5} type='number' placeholder='Set new Price'/>
+                    <Button mt={6}>Resell</Button>
                   </center>
                 </Box>
               </Box>
+             
+                </SimpleGrid>
         
     </>
   )
