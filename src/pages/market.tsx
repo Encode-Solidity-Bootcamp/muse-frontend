@@ -33,17 +33,14 @@ export default function MarketPlace() {
               Explore Wonderful Artists
             </Heading>
 
-            <Stack
-              py={4}
-              display={'grid'}
-              gridTemplateColumns={'repeat(4, 1fr)'}
-              gridAutoRows={'min(0,auto)'}
-            >
+           
+           
              <NftCard />
             
 
            
-            </Stack>
+            
+            
 
             <Footer />
           </main>

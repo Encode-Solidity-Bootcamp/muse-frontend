@@ -8,6 +8,7 @@ import {
     Stack,
     Image,
     Button,
+    SimpleGrid,
    
   } from '@chakra-ui/react'
   import dynamic from 'next/dynamic'
@@ -20,6 +21,7 @@ import {
 export default function NftCard() {
   return (
     <>
+     <SimpleGrid  columns={4} spacing='5px'>
          <Box
                 role={'group'}
                 p={6}
@@ -99,13 +101,14 @@ export default function NftCard() {
                     url="./song.mp3"
                     playing={false}
                     controls={true}
-                    width={'300px'}
+                    width={'250px'}
                   />
                   <center>
                     <Button mt={6}>Buy</Button>
                   </center>
                 </Box>
               </Box>
+              </SimpleGrid>
         
     </>
   )
