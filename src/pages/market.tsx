@@ -30,7 +30,7 @@ export default function MarketPlace() {
               fontFamily={'outfif'}
               lineHeight={'91px'}
             >
-              Explore Wonderful Artists
+              Explore NFTs
             </Heading>
 
            
