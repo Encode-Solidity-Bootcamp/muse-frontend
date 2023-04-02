@@ -29,6 +29,7 @@ export default function MarketPlace() {
               textAlign={'center'}
               fontFamily={'outfif'}
               lineHeight={'91px'}
+              mb={10}
             >
               Explore NFTs
             </Heading>
