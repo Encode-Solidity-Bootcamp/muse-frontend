@@ -1,0 +1,2 @@
+newArtistSignup(string memory _artistDetails): This function requires a string parameter _artistDetails, which is the CID hash of the artist's details.
+updateArtistDetails(string memory _newArtistDetails, uint256 _artistId): This function requires two parameters: a string parameter _newArtistDetails, which is the new CID hash of the artist's details, and a uint256 parameter _artistId, which is the ID of the artist whose details are being updated.
