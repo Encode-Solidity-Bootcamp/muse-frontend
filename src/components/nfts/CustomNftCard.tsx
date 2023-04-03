@@ -23,7 +23,7 @@ export default function CustomNftCard() {
   return (
     <>
          
-              <SimpleGrid  columns={4} spacing='5px'>
+         <SimpleGrid  columns={4} spacing='5px'>
               <Box
               
                 role={'group'}
@@ -104,7 +104,7 @@ export default function CustomNftCard() {
                     url="./song.mp3"
                     playing={false}
                     controls={true}
-                    width={'300px'}
+                    width={'250px'}
                   />
                   <center>
                     <Input py={5} mt={5} type='number' placeholder='Set new Price'/>

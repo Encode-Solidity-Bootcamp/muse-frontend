@@ -164,8 +164,8 @@ const NAV_ITEMS: Array<NavItem> = [
     href: '/profile',
   },
   {
-    label: 'Contact',
-    href: '#',
+    label: 'Our Artistes',
+    href: '/artistes',
   },
 ]
 

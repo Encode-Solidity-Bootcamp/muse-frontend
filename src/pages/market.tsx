@@ -29,21 +29,19 @@ export default function MarketPlace() {
               textAlign={'center'}
               fontFamily={'outfif'}
               lineHeight={'91px'}
+              mb={10}
             >
-              Explore Wonderful Artists
+              Explore NFTs
             </Heading>
 
-            <Stack
-              py={4}
-              display={'grid'}
-              gridTemplateColumns={'repeat(4, 1fr)'}
-              gridAutoRows={'min(0,auto)'}
-            >
+           
+           
              <NftCard />
             
 
            
-            </Stack>
+            
+            
 
             <Footer />
           </main>
