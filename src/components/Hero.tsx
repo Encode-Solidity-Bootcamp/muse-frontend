@@ -179,7 +179,7 @@ export default function CallToActionWithAnnotation() {
                 bg: 'purple.500',
               }}
             >
-              Artiste
+              Artist
             </Button>
             <Link href={'/market'}><Button
               colorScheme={'purple'}
@@ -201,7 +201,7 @@ export default function CallToActionWithAnnotation() {
       <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Signup as an Artiste</ModalHeader>
+          <ModalHeader>Signup as an Artist</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
           <FormControl id="image" >
