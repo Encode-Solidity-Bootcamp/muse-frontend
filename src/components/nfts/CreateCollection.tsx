@@ -1,6 +1,7 @@
+import { pushImgToStorage, putJSONandGetHash } from "@/utils";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import { Flex, useColorModeValue, Stack, Heading, FormControl, FormLabel, Center, Avatar, AvatarBadge, IconButton, Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ImageState = {
   file: File | null;
@@ -9,10 +10,11 @@ type ImageState = {
 type Item = {
   itemName: string;
   itemPrice: string;
-  itemQuantity: string;
+  itemQuantity: number;
   itemDescription: string;
   itemImageUrl: string;
 }
+
 
 export default function CreateCollection() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -39,10 +41,14 @@ export default function CreateCollection() {
     const [itemImageUrl, setItemImageUrl] = useState('')
     const [itemName, setItemName] = useState('');
     const [itemDescription, setItemDescription] = useState('');
-    const [itemQuantity, setItemQuantity] = useState('');
+    const [itemQuantity, setItemQuantity] = useState(1);
     const [itemPrice, setItemPrice] = useState('');
 
     const [itemsObject, setItemsObject] = useState<Item[]>([]);
+    const [itemsHash, setItemsHash ] = useState<string[]>([])
+    const [quantity, setQuantity] = useState<number[]>([]);
+    const [collectionInfoHash, setCollectionInfoHash] = useState('')
+
 
 
     const handleCollectionImageChange = (e: any) => {
@@ -61,22 +67,64 @@ export default function CreateCollection() {
       setItemSong(e.target.files[0]);
     };
 
+    
+  
+
     const addItem = async (e:any) => {
       e.preventDefault();
-
+      //LOOOK HEREEEEEE
+      setQuantity((quantity) => [...quantity, itemQuantity]);
       try{
-        //hashIMG
         const itemObj: Item = { itemName, itemDescription, itemImageUrl, itemQuantity, itemPrice};
-        console.log(itemObj)
-        setItemsObject((prev) => [...prev, itemObj]);
+        setItemsObject((prev) => [...prev, itemObj]);   
 
-        console.log(`here: `,itemsObject)
+        //addloading modal
+        const itemImgHash = await pushImgToStorage(itemImage);  
+        const itemSnippetHash = await pushImgToStorage(itemSnippet);
+        const itemSongHash = await pushImgToStorage(itemSong);
+        const item = {itemName, itemDescription, itemImgHash, itemPrice};
+        const itemHash = await putJSONandGetHash(item);
+        if(itemImgHash && itemSnippetHash && itemSongHash && itemHash) {console.log(`ALLHASHED!`)}
+        setItemsHash((prev)=> [...prev, itemHash]);
+        //endLoading modal
+        console.log(itemsHash)
 
       } catch (err){
         console.log(err)
       }
     }
-  
+    const CreateCollection = async(e:any) => {
+      e.preventDefault();
+
+      //  // upload artist to Fillion
+      //  const txResponse = await FactoryContract.deployERC1155(
+      //   collectionHash,
+      //   items,
+      //   ids,
+      //   quantity
+      // );
+
+    }
+    const ids = [];
+    for (let i = 1; i <= itemsObject.length; i++) {
+      ids.push(i);
+    }
+
+    const modalHandler = async() => {
+      if(!collectionImageUrl) return alert('no Image')
+      if(!collectionName) return alert(`no name`);
+      if(!collectionDescription) return alert(`no desc`);
+      const collectionImgHash = await pushImgToStorage(collectionImage); 
+      const collectionInfo = {collectionImgHash, collectionDescription, collectionName} ;
+
+      const collectionHash = await putJSONandGetHash(collectionInfo);
+
+      setCollectionInfoHash(collectionHash);
+
+      onOpen();
+    }
+
+   
 
   return (
     <>
@@ -138,7 +186,7 @@ export default function CreateCollection() {
        
         <Button
           bg={'blue.400'}
-          onClick={onOpen}
+          onClick={modalHandler}
           color={'white'}
           w="full"
           _hover={{
@@ -155,7 +203,7 @@ export default function CreateCollection() {
       <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Add Items to collection</ModalHeader>
+          <ModalHeader>Add Items to collection </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
           <FormControl id="image" >
@@ -233,7 +281,7 @@ export default function CreateCollection() {
           placeholder="quantity"
           _placeholder={{ color: 'gray.500' }}
           type="number"
-          onChange={(e)=> {setItemQuantity(e.target.value)}}
+          onChange={(e)=> {setItemQuantity(Number(e.target.value))}}
         />
       </FormControl>
 
@@ -314,10 +362,7 @@ export default function CreateCollection() {
        </Tfoot>
      </Table>
    </TableContainer>
-</>
-  ): null }
- 
-<Center><Button
+   <Center><Button
           bg={'blue.400'}
           
           color={'white'}
@@ -327,6 +372,10 @@ export default function CreateCollection() {
           }}>
           Create collection
         </Button></Center>
+</>
+  ): null }
+ 
+
 
 
 
