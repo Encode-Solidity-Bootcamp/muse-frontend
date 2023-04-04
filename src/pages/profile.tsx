@@ -51,7 +51,7 @@ export default function MarketPlace() {
               fontFamily={'outfif'}
               lineHeight={'91px'}
             >
-              User/ Artiste Profile
+              User/Artist Profile
             </Heading>
 
           <Center>
@@ -74,7 +74,7 @@ export default function MarketPlace() {
                 <Text>About Me.</Text>
             </CardBody>
             <CardFooter>
-                <h6>Artiste</h6>
+                <h6>Artist</h6>
             </CardFooter>
         </Card>
 
