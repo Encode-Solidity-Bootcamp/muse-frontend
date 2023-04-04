@@ -22,21 +22,121 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  FormErrorMessage,
+  FormHelperText,
+  Avatar,
+  useToast,
+  Spinner,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+import { useState } from 'react';
+import { pushImgToStorage, putJSONandGetHash } from '@/utils';
+type ImageState = {
+  file: File | null;
+  previewUrl: string | null;
+};
+
+
+
+
 
 export default function CallToActionWithAnnotation() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const toast = useToast()
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [artistImage, setArtistImage] = useState<ImageState>({
+    file: null,
+    previewUrl: null,
+  });
+  const [artistImageUrl, setArtistImageUrl] = useState('');
+  const [artistName, setArtistName] =  useState('');
+  const [bio, setBio] =  useState('');
 
+  const [loading, setLoading] = useState(false)
+  const isErrorA = artistName === '';
+  const isErrorB = bio === '';
+  const handleArtistImageChange = (e: any) => {
+    setArtistImage(e.target.files[0]);
+    setArtistImageUrl(URL.createObjectURL(e.target.files[0]));
+  };
+  const toastError =(msg: string) => {
+    return toast({
+      title: msg,
+      status: 'error',
+      duration: 9000,
+      isClosable: true,
+    })
+  }
+
+
+  
+
+  const handleCreateArtist = async (e: any) => {
+    e.preventDefault();
+    
+   
+    if(!artistImageUrl)return toastError('No Image') 
+
+    if(!artistName)return toastError('Please fill in name')
+    if(!bio)return toastError('Please fill in Bio')
+    
+    setLoading(true);
+    if(artistImage && artistImageUrl) {
+     
+      const imgHash = await pushImgToStorage(artistImage);
+      const artistObj = {
+        artistName,
+        bio,
+        imgHash
+      }
+      console.log("Image hash: ", imgHash);
+
+      const artistHash = await putJSONandGetHash(artistObj);
+      console.log("Artist hash: ", artistHash)
+      onClose();
+      toast({
+        title: 'Account created.',
+        description: "We've created your account for you.",
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      })
+      setArtistImage({
+        file: null,
+        previewUrl: null,
+      })
+      setArtistName('')
+      setBio('')
+      setArtistImageUrl('')
+      setLoading(false);
+    }
+
+
+ 
+  }
   return (
     <>
+    <Modal isOpen={loading} onClose={()=>{!loading}} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalBody>
+        <Center><Spinner  thickness='4px'
+  speed='0.65s'
+  emptyColor='gray.200'
+  color='blue.500'
+  size='xl' /></Center>
+        </ModalBody>
+        
+        
+      </ModalContent>
+    </Modal>
+       
       <Head>
         <link
           href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap"
           rel="stylesheet"
         />
       </Head>
-
+  
       <Container maxW={'3xl'}>
         <Stack
           as={Box}
@@ -112,28 +212,50 @@ export default function CallToActionWithAnnotation() {
           placeholder="Image"
           _placeholder={{ color: 'gray.500' }}
           type="file"
+          onChange={handleArtistImageChange}
         />
+           <br />
+        {artistImageUrl && <Avatar size='md' p={2} name={artistName} src={artistImageUrl} />}
             
           </Center>
          
         </Stack>
       </FormControl>
-      <FormControl id="userName" isRequired>
+      <FormControl id="userName" isRequired isInvalid={isErrorA}>
         <FormLabel>Name</FormLabel>
         <Input
-          placeholder="song title"
+          placeholder="your name"
           _placeholder={{ color: 'gray.500' }}
           type="text"
+          required
+          onChange={(e)=> {setArtistName(e.target.value)}}
+          
         />
+          {!isErrorA ? (
+        <FormHelperText>
+          
+        </FormHelperText>
+      ) : (
+        <FormErrorMessage>Name is required.</FormErrorMessage>
+      )}
       </FormControl>
       
-      <FormControl id="description" isRequired>
+      <FormControl id="description" isRequired isInvalid={isErrorB}>
         <FormLabel>About you</FormLabel>
         <Input
           placeholder="you you you!"
           _placeholder={{ color: 'gray.500' }}
           type="text"
+          required
+          onChange={(e)=> {setBio(e.target.value)}}
         />
+        {!isErrorB ? (
+        <FormHelperText>
+          
+        </FormHelperText>
+      ) : (
+        <FormErrorMessage>Bio is required.</FormErrorMessage>
+      )}
       </FormControl>
 
           </ModalBody>
@@ -142,7 +264,7 @@ export default function CallToActionWithAnnotation() {
             <Button colorScheme='blue' mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant='ghost'>SignUp</Button>
+            <Button variant='ghost' onClick={handleCreateArtist}>SignUp</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

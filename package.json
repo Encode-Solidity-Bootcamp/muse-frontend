@@ -20,7 +20,6 @@
     "@types/react": "18.0.31",
     "@types/react-dom": "18.0.11",
     "@wagmi/core": "^0.10.7",
-    "chakra-player": "^1.1.10",
     "eslint": "8.37.0",
     "eslint-config-next": "13.2.4",
     "ethers": "^5.7.2",
@@ -31,7 +30,8 @@
     "react-icons": "^4.8.0",
     "react-player": "^2.12.0",
     "typescript": "5.0.2",
-    "wagmi": "^0.12.7"
+    "wagmi": "^0.12.7",
+    "web3.storage": "^4.5.4"
   },
   "devDependencies": {
     "frontend": "github:bomanaps/muse-frontend",

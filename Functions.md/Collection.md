@@ -2,7 +2,7 @@
         _collectionInfoHash: hash of CollectionInfo, not contractHash (string)
         _hashOfNFTItems: hash cids of individual nft items in an array (string[])
         _ids: an array of token IDs (uint256[])
-        _quantities: an array of the quantities of each token (uint256[])
+        _quantities: an array of the quantities of each item (uint256[])
         owner: address of the owner of the contract (address)
 
     getTotalChildren: This function returns the number of child tokens deployed. It requires no parameters.
