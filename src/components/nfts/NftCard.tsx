@@ -53,18 +53,17 @@ export default function NftCard() {
   const getItems = async () => {
     try {
      console.log('hello')
-      const res = await axios.get('localhost:4000/itemList', {headers})
-      console.log(`NetWORK: `,res)
+      const res = await axios.get('http://localhost:4000/itemList', {headers})
       setItems(res.data);
     } catch (error) {
-      
+      console.log(error)
     }
   }
-  getItems()
+  // getItems()
 
-  useEffect (()=> {
-    getItems();
-  })
+  // useEffect (()=> {
+  //   getItems();
+  // })
 
 
   return (

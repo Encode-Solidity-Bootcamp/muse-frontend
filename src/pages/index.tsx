@@ -1,5 +1,5 @@
 import styles from '@/styles/Home.module.css'
-import { Navbar, Footer, Hero } from '@/components'
+import { Navbar, Footer, Hero, Features } from '@/components'
 
 
 export default function Home() {
@@ -10,6 +10,7 @@ export default function Home() {
             <Navbar />
 
             <Hero />
+            <Features />
 
             <Footer />
           </main>

@@ -4,5 +4,6 @@ export { default as Hero } from './Hero'
 export { default as NftCard } from './nfts/NftCard'
 export { default as CreateCollection } from './nfts/CreateCollection'
 export { default as CustomNftCard } from './nfts/CustomNftCard'
+export {default as Features} from './Features'
 
 
