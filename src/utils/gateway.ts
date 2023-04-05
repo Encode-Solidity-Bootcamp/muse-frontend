@@ -17,6 +17,10 @@ const client = new Web3Storage({ token: toks });
 
 export const getJSONFromCID = async (_cid: any) => {
   const json = await client.get(_cid);
+  if (!json) {
+    // handle the case where `json` is null
+    throw new Error("Unable to get JSON from CID");
+  }
   const filesArr = await json.files(); // Web3File[]
   let abc = filesArr[0].cid;
   const data = await fetch(`https://${abc}.ipfs.w3s.link`).then((dets) =>

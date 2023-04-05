@@ -36,7 +36,7 @@ import ReactPlayer from 'react-player'
 import { getAccount } from '@wagmi/core'
 import { readContract } from '@wagmi/core'
 import { ARTIST_ABI, ARTIST_CONTRACT_ADDRESS } from '@/contracts/constants'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getJSONFromCID } from '@/utils'
  
 type Artist = {
@@ -45,17 +45,17 @@ type Artist = {
   imgHash: string;
  
 }
- 
-const account = getAccount()
+interface ContractData {
+  artistDetails: string;
+} 
+
 
 
 
 const IMAGE = 'https://cdn.punchng.com/wp-content/uploads/2022/12/18034549/Davido-1.jpg'
 
 
-
-export default function Profile() {
-  const [allArtists, setAllArtists] = useState<[]>([]);
+export default  function Profile() {
   const [artistDetails, setArtistDetails]= useState<Artist>({
     artistName: '',
     bio: '',
@@ -63,20 +63,35 @@ export default function Profile() {
   });
 
   const getArtist = async ()=>{
-    const data = await readContract({
-      address: ARTIST_CONTRACT_ADDRESS,
-      abi: ARTIST_ABI,
-      functionName: 'addressToArtist',
-      args: [account.address]
-    })
-
-    const artistDetails = await getJSONFromCID(data.artistDetails)
-    setArtistDetails(artistDetails);
+    try {
+      const account =  getAccount()
+      if(account) {
+        const data: ContractData = await readContract({
+          address: ARTIST_CONTRACT_ADDRESS,
+          abi: ARTIST_ABI,
+          functionName: 'addressToArtist',
+          args: [account.address]
+        }) as ContractData;
     
+        const artistDetails = await getJSONFromCID(data.artistDetails)
+        setArtistDetails(artistDetails)
+      }else {
+        console.log(`eer`)
+      }  
+    }
+     catch (error) {
+  
+      console.log(error)  
+    }
+  
+  
   }
-  getArtist(); 
+  
+  useEffect(()=> {    
+     getArtist(); 
+  }, [])
 
- 
+  // getArtist();
   return (
     <>
      

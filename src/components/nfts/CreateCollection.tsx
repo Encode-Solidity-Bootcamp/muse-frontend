@@ -4,6 +4,7 @@ import { Flex, useColorModeValue, Stack, Heading, FormControl, FormLabel, Center
 import { useEffect, useState } from "react";
 import { prepareWriteContract, writeContract } from '@wagmi/core'
 import { FACTORY_ABI, FACTORY_CONTRACT_ADDRESS } from "@/contracts/constants";
+import { useContract, useProvider, useSigner } from "wagmi";
 
 
 type ImageState = {
@@ -20,6 +21,13 @@ type Item = {
 
 
 export default function CreateCollection() {
+  const provider = useProvider();
+  const signer = useSigner();
+  const ContractInstance = useContract({
+    address: FACTORY_CONTRACT_ADDRESS,
+    abi: FACTORY_ABI,
+    signerOrProvider: signer.data || provider,
+  })
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
     const [collectionImage, setCollectionImage] = useState<ImageState>({
@@ -171,36 +179,55 @@ export default function CreateCollection() {
      
     }
     const createCollection = async(e:any) => {
+
       e.preventDefault();
-      setLoading(true)
+      try {
+        setLoading(true)
       const ids = [];
       for (let i = 1; i <= itemsObject.length; i++) {
         ids.push(i);
       }
+       if(!ContractInstance) return;
+      const txResponse = await ContractInstance.deployERC1155(
+        collectionInfoHash, 
+        itemsHash, 
+        ids, 
+        quantity
+      );
+      const data = await txResponse.wait();
+      const contractAdd = data.events.find((e: { event: string; }) => e.event === 'ERC1155Created').args[1]
+      console.log(data.events[1].address)
+      
+      //MINT-ALL
+      const tx = await ContractInstance.mintCollection(contractAdd)
+      const d = tx.wait();
+      console.log(d)
 
-      const config = await prepareWriteContract({
-        address: FACTORY_CONTRACT_ADDRESS,
-        abi: FACTORY_ABI,
-        functionName: 'deployERC1155',
-        args: [collectionInfoHash, itemsHash, ids, quantity]
-      })
-      const data = await writeContract(config);
-      const receipt = await  data.wait();
-      console.log(receipt)
+      // const config = await prepareWriteContract({
+      //   address: FACTORY_CONTRACT_ADDRESS, 
+      //   abi: FACTORY_ABI,
+      //   functionName: 'deployERC1155',
+      //   args: [collectionInfoHash, itemsHash, ids, quantity]
+      // })
+      // const data = await writeContract(config);
+      // const receipt = await  data.wait();
+      // console.log(receipt)
+      
+
       if(data) {
         toastSuccess('Collection Created', 'Ouu! yeah go Svaticiian!');
       }
       setLoading(false)
 
-      //  // upload artist to Fillion
-      //  const txResponse = await FactoryContract.deployERC1155(
-      //   collectionHash,
-      //   items,
-      //   ids,
-      //   quantity
-      // );
+     
 
-    }
+
+        
+      } catch (error) {
+        console.log(error)
+        setLoading(false)
+      }
+          }
 
    
 
