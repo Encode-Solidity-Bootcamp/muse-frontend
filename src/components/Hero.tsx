@@ -93,13 +93,7 @@ export default function CallToActionWithAnnotation() {
       const artistHash = await putJSONandGetHash(artistObj);
       console.log("Artist hash: ", artistHash)
       onClose();
-      toast({
-        title: 'Account created.',
-        description: "We've created your account for you.",
-        status: 'success',
-        duration: 9000,
-        isClosable: true,
-      })
+     
       setArtistImage({
         file: null,
         previewUrl: null,

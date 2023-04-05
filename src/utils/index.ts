@@ -1,2 +1,2 @@
-export {pushImgToStorage} from './gateway'
-export {putJSONandGetHash} from './gateway'
+export {pushImgToStorage,putJSONandGetHash} from './gateway'
+export {useToastError, useToastSuccess} from './Toast'

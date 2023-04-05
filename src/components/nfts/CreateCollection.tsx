@@ -1,6 +1,6 @@
 import { pushImgToStorage, putJSONandGetHash } from "@/utils";
 import { SmallCloseIcon } from "@chakra-ui/icons";
-import { Flex, useColorModeValue, Stack, Heading, FormControl, FormLabel, Center, Avatar, AvatarBadge, IconButton, Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr } from "@chakra-ui/react";
+import { Flex, useColorModeValue, Stack, Heading, FormControl, FormLabel, Center, Avatar, AvatarBadge, IconButton, Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 type ImageState = {
@@ -18,6 +18,7 @@ type Item = {
 
 export default function CreateCollection() {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const toast = useToast();
     const [collectionImage, setCollectionImage] = useState<ImageState>({
       file: null,
       previewUrl: null,
@@ -47,9 +48,27 @@ export default function CreateCollection() {
     const [itemsObject, setItemsObject] = useState<Item[]>([]);
     const [itemsHash, setItemsHash ] = useState<string[]>([])
     const [quantity, setQuantity] = useState<number[]>([]);
-    const [collectionInfoHash, setCollectionInfoHash] = useState('')
+    const [collectionInfoHash, setCollectionInfoHash] = useState('');
+    const [loading, setLoading] = useState(false)
 
 
+    const toastError =(msg: string) => {
+      return toast({
+        title: msg,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+    }
+    const toastSuccess =(msg: string, description: string) => {
+      return toast({
+        title: msg,
+        description: description,
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      })
+    }
 
     const handleCollectionImageChange = (e: any) => {
       setCollectionImage(e.target.files[0]);
@@ -73,12 +92,22 @@ export default function CreateCollection() {
     const addItem = async (e:any) => {
       e.preventDefault();
       //LOOOK HEREEEEEE
-      setQuantity((quantity) => [...quantity, itemQuantity]);
+     
       try{
+       
+        if(!itemImage && !itemImageUrl) return toastError('Please upload an image') ;
+        if(!itemSnippet) return toastError('please add a snippet');
+        if(!itemSong) return toastError('please add a song')
+        if(!itemDescription || !itemName || !itemPrice || !itemQuantity ) return toastError('plesase fill the required fields')
+
+
+        setQuantity((quantity) => [...quantity, itemQuantity]);
         const itemObj: Item = { itemName, itemDescription, itemImageUrl, itemQuantity, itemPrice};
-        setItemsObject((prev) => [...prev, itemObj]);   
+        setItemsObject((prev) => [...prev, itemObj]); 
+
 
         //addloading modal
+        setLoading(true)
         const itemImgHash = await pushImgToStorage(itemImage);  
         const itemSnippetHash = await pushImgToStorage(itemSnippet);
         const itemSongHash = await pushImgToStorage(itemSong);
@@ -87,13 +116,61 @@ export default function CreateCollection() {
         if(itemImgHash && itemSnippetHash && itemSongHash && itemHash) {console.log(`ALLHASHED!`)}
         setItemsHash((prev)=> [...prev, itemHash]);
         //endLoading modal
-        console.log(itemsHash)
+        setLoading(false)
+        setItemImage({
+          file: null,
+          previewUrl: null,
+        })
+        setItemSong({
+          file: null,
+          previewUrl: null,
+        });
+        setItemSnippet({
+          file: null,
+          previewUrl: null,
+        });
+        setItemDescription('');
+        setItemName('');
+        setItemQuantity(0);
+        setItemPrice('');
+        toastSuccess('Item added', 'successfully added item');
+        onClose();
+       
 
       } catch (err){
         console.log(err)
       }
     }
-    const CreateCollection = async(e:any) => {
+  
+    const ids = [];
+    for (let i = 1; i <= itemsObject.length; i++) {
+      ids.push(i);
+    }
+
+    const modalHandler = async() => {
+      if(!collectionImageUrl) return alert('no Image')
+      if(!collectionName) return alert(`no name`);
+      if(!collectionDescription) return alert(`no desc`);
+      if(!collectionInfoHash) {
+        setLoading(true)
+        const collectionImgHash = await pushImgToStorage(collectionImage); 
+        const collectionInfo = {collectionImgHash, collectionDescription, collectionName} ;
+  
+        const collectionHash = await putJSONandGetHash(collectionInfo);
+  
+        setCollectionInfoHash(collectionHash);
+        setLoading(false)
+        onOpen();
+  
+      }
+      if(collectionInfoHash){
+        onOpen();
+      }
+
+     
+     
+    }
+    const createCollection = async(e:any) => {
       e.preventDefault();
 
       //  // upload artist to Fillion
@@ -105,29 +182,25 @@ export default function CreateCollection() {
       // );
 
     }
-    const ids = [];
-    for (let i = 1; i <= itemsObject.length; i++) {
-      ids.push(i);
-    }
-
-    const modalHandler = async() => {
-      if(!collectionImageUrl) return alert('no Image')
-      if(!collectionName) return alert(`no name`);
-      if(!collectionDescription) return alert(`no desc`);
-      const collectionImgHash = await pushImgToStorage(collectionImage); 
-      const collectionInfo = {collectionImgHash, collectionDescription, collectionName} ;
-
-      const collectionHash = await putJSONandGetHash(collectionInfo);
-
-      setCollectionInfoHash(collectionHash);
-
-      onOpen();
-    }
 
    
 
   return (
     <>
+     <Modal isOpen={loading} onClose={()=>{!loading}} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalBody>
+        <Center><Spinner  thickness='4px'
+  speed='0.65s'
+  emptyColor='gray.200'
+  color='blue.500'
+  size='xl' /></Center>
+        </ModalBody>
+        
+        
+      </ModalContent>
+    </Modal>
     <Flex
     minH={'10vh'}
     align={'center'}

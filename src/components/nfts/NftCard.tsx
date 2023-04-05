@@ -30,16 +30,42 @@ import {
    
   } from '@chakra-ui/react'
   import dynamic from 'next/dynamic'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
   const ReactPlayer = dynamic(() => import('react-player'), { ssr: false })
+
+ 
   
   const IMAGE = 'https://cdn.punchng.com/wp-content/uploads/2022/12/18034549/Davido-1.jpg'
   const MotionBox = motion(Box);
 
 export default function NftCard() {
+  const [items, setItems] = useState([{}])
   const { isOpen,onOpen, onClose } = useDisclosure();
   const [amount, setAmount] = useState('');
+
+  const headers = {
+  
+    "content-type": "application/json",
+}
+
+  const getItems = async () => {
+    try {
+     console.log('hello')
+      const res = await axios.get('localhost:4000/itemList', {headers})
+      console.log(`NetWORK: `,res)
+      setItems(res.data);
+    } catch (error) {
+      
+    }
+  }
+  getItems()
+
+  useEffect (()=> {
+    getItems();
+  })
+
 
   return (
     <>
@@ -131,7 +157,7 @@ export default function NftCard() {
                  
                   <ReactPlayer
                     height={'100px'}
-                    url="./song.mp3"
+                    url="https://ipfs.io/ipfs/bafybeibygvdrykqjjofss34bskfuhmszye52oapkiyuvzn7ma6eywlndpu"
                     playing={false}
                     controls={true}
                     width={'250px'}
