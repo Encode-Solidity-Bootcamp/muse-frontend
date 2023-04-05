@@ -2,6 +2,9 @@ import { pushImgToStorage, putJSONandGetHash } from "@/utils";
 import { SmallCloseIcon } from "@chakra-ui/icons";
 import { Flex, useColorModeValue, Stack, Heading, FormControl, FormLabel, Center, Avatar, AvatarBadge, IconButton, Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { prepareWriteContract, writeContract } from '@wagmi/core'
+import { FACTORY_ABI, FACTORY_CONTRACT_ADDRESS } from "@/contracts/constants";
+
 
 type ImageState = {
   file: File | null;
@@ -142,10 +145,7 @@ export default function CreateCollection() {
       }
     }
   
-    const ids = [];
-    for (let i = 1; i <= itemsObject.length; i++) {
-      ids.push(i);
-    }
+   
 
     const modalHandler = async() => {
       if(!collectionImageUrl) return alert('no Image')
@@ -172,6 +172,25 @@ export default function CreateCollection() {
     }
     const createCollection = async(e:any) => {
       e.preventDefault();
+      setLoading(true)
+      const ids = [];
+      for (let i = 1; i <= itemsObject.length; i++) {
+        ids.push(i);
+      }
+
+      const config = await prepareWriteContract({
+        address: FACTORY_CONTRACT_ADDRESS,
+        abi: FACTORY_ABI,
+        functionName: 'deployERC1155',
+        args: [collectionInfoHash, itemsHash, ids, quantity]
+      })
+      const data = await writeContract(config);
+      const receipt = await  data.wait();
+      console.log(receipt)
+      if(data) {
+        toastSuccess('Collection Created', 'Ouu! yeah go Svaticiian!');
+      }
+      setLoading(false)
 
       //  // upload artist to Fillion
       //  const txResponse = await FactoryContract.deployERC1155(
@@ -439,6 +458,7 @@ export default function CreateCollection() {
           bg={'blue.400'}
           
           color={'white'}
+          onClick={createCollection}
           textAlign={'center'}
           _hover={{
             bg: 'blue.500',

@@ -31,10 +31,16 @@ import {
 import Link from 'next/link'
 import { useState } from 'react';
 import { pushImgToStorage, putJSONandGetHash } from '@/utils';
+
+import { prepareWriteContract, writeContract } from '@wagmi/core'
+import { ARTIST_ABI, ARTIST_CONTRACT_ADDRESS } from '@/contracts/constants';
+ 
+
 type ImageState = {
   file: File | null;
   previewUrl: string | null;
 };
+
 
 
 
@@ -50,6 +56,7 @@ export default function CallToActionWithAnnotation() {
   const [artistImageUrl, setArtistImageUrl] = useState('');
   const [artistName, setArtistName] =  useState('');
   const [bio, setBio] =  useState('');
+  const [artistInfoHash, setArtistInfoHash] = useState('')
 
   const [loading, setLoading] = useState(false)
   const isErrorA = artistName === '';
@@ -67,43 +74,91 @@ export default function CallToActionWithAnnotation() {
     })
   }
 
+  const toastSuccess =(msg: string, description: string) => {
+    return toast({
+      title: msg,
+      description: description,
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    })
+  }
 
   
 
   const handleCreateArtist = async (e: any) => {
+
     e.preventDefault();
+
+    try {
+
+      if(!artistImageUrl)return toastError('No Image') 
+
+      if(!artistName)return toastError('Please fill in name')
+      if(!bio)return toastError('Please fill in Bio')
+      
+     
+      if(artistImage && artistImageUrl) {
+        setLoading(true);
+       
+        const imgHash = await pushImgToStorage(artistImage);
+        const artistObj = {
+          artistName,
+          bio,
+          imgHash
+        }
+  
+        const artistHash = await putJSONandGetHash(artistObj);
+     
+        setArtistInfoHash(artistHash);
+        
+          const config = await prepareWriteContract({
+            address: ARTIST_CONTRACT_ADDRESS,
+            abi: ARTIST_ABI,
+            functionName: 'newArtistSignup',
+            args: [artistInfoHash]
+          })
+          const data = await writeContract(config);
+          data.wait();
+          if(data) {
+            toastSuccess('Account Created', 'Welcome Onboard');
+          }
+        
+        onClose();
+       
+        setArtistImage({
+          file: null,
+          previewUrl: null,
+        })
+        setArtistName('')
+        setBio('')
+        setArtistImageUrl('')
+        setLoading(false);
+      }
+      
+    } catch (error) {
+      console.log(error)
+      toastError('Account Exist please proceed!')
+      setLoading(false)
+      onClose();
+       
+        setArtistImage({
+          file: null,
+          previewUrl: null,
+        })
+        setArtistName('')
+        setBio('')
+        setArtistImageUrl('')
+        setLoading(false);
+      
+     
+      
+    }
     
    
-    if(!artistImageUrl)return toastError('No Image') 
-
-    if(!artistName)return toastError('Please fill in name')
-    if(!bio)return toastError('Please fill in Bio')
+ 
+   
     
-    setLoading(true);
-    if(artistImage && artistImageUrl) {
-     
-      const imgHash = await pushImgToStorage(artistImage);
-      const artistObj = {
-        artistName,
-        bio,
-        imgHash
-      }
-      console.log("Image hash: ", imgHash);
-
-      const artistHash = await putJSONandGetHash(artistObj);
-      console.log("Artist hash: ", artistHash)
-      onClose();
-     
-      setArtistImage({
-        file: null,
-        previewUrl: null,
-      })
-      setArtistName('')
-      setBio('')
-      setArtistImageUrl('')
-      setLoading(false);
-    }
-
 
  
   }

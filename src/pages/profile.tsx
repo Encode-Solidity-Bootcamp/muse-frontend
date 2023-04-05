@@ -33,12 +33,50 @@ import {
  
 } from '@chakra-ui/react'
 import ReactPlayer from 'react-player'
+import { getAccount } from '@wagmi/core'
+import { readContract } from '@wagmi/core'
+import { ARTIST_ABI, ARTIST_CONTRACT_ADDRESS } from '@/contracts/constants'
+import { useState } from 'react'
+import { getJSONFromCID } from '@/utils'
+ 
+type Artist = {
+  artistName: string;
+  bio: string;
+  imgHash: string;
+ 
+}
+ 
+const account = getAccount()
+
+
 
 const IMAGE = 'https://cdn.punchng.com/wp-content/uploads/2022/12/18034549/Davido-1.jpg'
 
 
 
-export default function MarketPlace() {
+export default function Profile() {
+  const [allArtists, setAllArtists] = useState<[]>([]);
+  const [artistDetails, setArtistDetails]= useState<Artist>({
+    artistName: '',
+    bio: '',
+    imgHash: ''
+  });
+
+  const getArtist = async ()=>{
+    const data = await readContract({
+      address: ARTIST_CONTRACT_ADDRESS,
+      abi: ARTIST_ABI,
+      functionName: 'addressToArtist',
+      args: [account.address]
+    })
+
+    const artistDetails = await getJSONFromCID(data.artistDetails)
+    setArtistDetails(artistDetails);
+    
+  }
+  getArtist(); 
+
+ 
   return (
     <>
      
@@ -51,7 +89,7 @@ export default function MarketPlace() {
               fontFamily={'outfif'}
               lineHeight={'91px'}
             >
-              User/Artist Profile
+               Profile
             </Heading>
 
           <Center>
@@ -64,14 +102,14 @@ export default function MarketPlace() {
                    
                 <WrapItem py={5} px={9}>
                
-                    <Avatar size='2xl' name='Segun Adebayo' src='https://bit.ly/sage-adebayo' />{' '}
+                    <Avatar size='2xl' name={artistDetails.artistName || `User`} src={`https://ipfs.io/ipfs/${artistDetails.imgHash}`} />{' '}
                 </WrapItem>
                   
                 </Wrap>
-                <Heading size='md' textAlign={'center'}> Michal Jackson</Heading>
+                <Heading size='md' textAlign={'center'}> {artistDetails.artistName||`Svatician`}</Heading>
             </CardHeader>
             <CardBody pt={-1}>
-                <Text>About Me.</Text>
+                <Text>{artistDetails.bio}</Text>
             </CardBody>
             <CardFooter>
                 <h6>Artist</h6>

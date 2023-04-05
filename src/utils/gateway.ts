@@ -15,16 +15,15 @@ const client = new Web3Storage({ token: toks });
 //   return data;
 // };
 
-// export const getJSONFromCID = async (_cid) => {
-//   const json = await client.get(_cid);
-//   const filesArr = await json.files(); // Web3File[]
-//   let abc = filesArr[0].cid;
-//   console.log('abc',abc)
-//   const data = await fetch(`https://${abc}.ipfs.w3s.link`).then((dets) =>
-//     dets.json()
-//   );
-//   return data;
-// };
+export const getJSONFromCID = async (_cid: any) => {
+  const json = await client.get(_cid);
+  const filesArr = await json.files(); // Web3File[]
+  let abc = filesArr[0].cid;
+  const data = await fetch(`https://${abc}.ipfs.w3s.link`).then((dets) =>
+    dets.json()
+  );
+  return data;
+};
 
 // export const putFileandGetHash = async (file) => {
 //   const content = new Blob([file], { type: "application/json" });

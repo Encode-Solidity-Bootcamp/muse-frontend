@@ -6,14 +6,14 @@ export default function Home() {
   return (
     <>
       
-          <main className={styles.main}>
+          
             <Navbar />
 
             <Hero />
             <Features />
 
             <Footer />
-          </main>
+        
       
     </>
   )
