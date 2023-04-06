@@ -165,7 +165,7 @@ const NAV_ITEMS: Array<NavItem> = [
   },
   {
     label: 'Our Artists',
-    href: '/artists',
+    href: '/svaticians',
   },
 ]
 

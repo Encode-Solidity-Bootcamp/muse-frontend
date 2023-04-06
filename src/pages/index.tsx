@@ -1,5 +1,5 @@
 import styles from '@/styles/Home.module.css'
-import { Navbar, Footer, Hero, Features } from '@/components'
+import { Navbar, Footer, Hero, Features } from '@/components/nfts'
 
 
 export default function Home() {

@@ -59,7 +59,7 @@ export default function NftCard() {
       console.log(error)
     }
   }
-  // getItems()
+  getItems()
 
   // useEffect (()=> {
   //   getItems();

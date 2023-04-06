@@ -3,8 +3,9 @@ import { SmallCloseIcon } from "@chakra-ui/icons";
 import { Flex, useColorModeValue, Stack, Heading, FormControl, FormLabel, Center, Avatar, AvatarBadge, IconButton, Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { prepareWriteContract, writeContract } from '@wagmi/core'
-import { FACTORY_ABI, FACTORY_CONTRACT_ADDRESS } from "@/contracts/constants";
+import { COLLECTION_ABI, FACTORY_ABI, FACTORY_CONTRACT_ADDRESS } from "@/contracts/constants";
 import { useContract, useProvider, useSigner } from "wagmi";
+import { ethers } from "ethers";
 
 
 type ImageState = {
@@ -28,6 +29,7 @@ export default function CreateCollection() {
     abi: FACTORY_ABI,
     signerOrProvider: signer.data || provider,
   })
+ 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
     const [collectionImage, setCollectionImage] = useState<ImageState>({
@@ -196,10 +198,20 @@ export default function CreateCollection() {
       );
       const data = await txResponse.wait();
       const contractAdd = data.events.find((e: { event: string; }) => e.event === 'ERC1155Created').args[1]
+      console.log(data.events.find((e: { event: string; }) => e.event === 'ERC1155Created').args[1])
       console.log(data.events[1].address)
+
+      const collectionInstance = new ethers.Contract(
+        contractAdd,
+        COLLECTION_ABI,
+        signer.data || provider,
+      )
+      // const idss = await collectionInstance.token_ids()
+      // const res = await  idss.wait();
+      // console.log(`IDS: `,res)
       
       //MINT-ALL
-      const tx = await ContractInstance.mintCollection(contractAdd)
+      const tx = await collectionInstance.mintAll()
       const d = tx.wait();
       console.log(d)
 

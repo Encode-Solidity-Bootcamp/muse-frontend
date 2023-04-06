@@ -1,5 +1,5 @@
 import styles from '@/styles/Home.module.css'
-import { Navbar, Footer, CreateCollection, CustomNftCard } from '@/components/nfts'
+import { Navbar, Footer, CreateCollection, CustomNftCard, ArtistCard } from '@/components/nfts'
 
 import {
   Box,
@@ -38,6 +38,7 @@ import { readContract } from '@wagmi/core'
 import { ARTIST_ABI, ARTIST_CONTRACT_ADDRESS } from '@/contracts/constants'
 import { useEffect, useState } from 'react'
 import { getJSONFromCID } from '@/utils'
+import { useRouter } from 'next/router'
  
 type Artist = {
   artistName: string;
@@ -55,12 +56,16 @@ interface ContractData {
 const IMAGE = 'https://cdn.punchng.com/wp-content/uploads/2022/12/18034549/Davido-1.jpg'
 
 
-export default  function Profile() {
+export default  function Artist() {
   const [artistDetails, setArtistDetails]= useState<Artist>({
     artistName: '',
     bio: '',
     imgHash: ''
   });
+
+  const router = useRouter();
+  const { id } = router.query;
+
 
   const getArtist = async ()=>{
     try {
@@ -134,60 +139,17 @@ export default  function Profile() {
         
          </Center>
 
-         <Tabs isFitted variant='enclosed' py={9}>
-            <TabList mb='1em'>
-                <Tab>NFTs you Own</Tab>
-                <Tab>Create Collection</Tab>
-                <Tab>Transaction History</Tab>
-            </TabList>
-            <TabPanels>
-                <TabPanel>
-                <CustomNftCard/>
-                </TabPanel>
-                <TabPanel mt={-7}>
-                <CreateCollection  />
-                </TabPanel>
-                {/* Transaction History */}
-                <TabPanel>
-                <TableContainer>
-  <Table size={'md'} variant='striped' align="center" colorScheme='teal' width={'50%'}>
-    <Thead>
-      <Tr>
-        <Th>Activity</Th>
-        <Th>Transaction Hash</Th>
-        <Th isNumeric>Date</Th>
-      </Tr>
-    </Thead>
-    <Tbody>
-      <Tr>
-        <Td>Buy</Td>
-        <Td>0x789086ybufw.......68347</Td>
-        <Td isNumeric>20/05/2023</Td>
-      </Tr>
-      <Tr>
-      <Td>sell</Td>
-        <Td>0x789086ybufw.......68347</Td>
-        <Td isNumeric>20/05/2023</Td>
-      </Tr>
-      <Tr>
-      <Td>Transfer</Td>
-        <Td>0x789086ybufw.......68347</Td>
-        <Td isNumeric>20/05/2023</Td>
-      </Tr>
-    </Tbody>
-    <Tfoot>
-      <Tr>
-      <Th>Activity</Th>
-        <Th>Transaction Hash</Th>
-        <Th isNumeric>Date</Th>
-      </Tr>
-    </Tfoot>
-  </Table>
-</TableContainer>
-                </TabPanel>
-            </TabPanels>
-        </Tabs>
-            
+         <Heading
+              fontWeight={700}
+              fontSize={'45px'}
+              textAlign={'center'}
+              fontFamily={'outfif'}
+              lineHeight={'91px'}
+            >
+               Collections
+            </Heading>
+
+         <ArtistCard id={undefined} name={undefined} imgHash={undefined} />
 
            
             <Footer />

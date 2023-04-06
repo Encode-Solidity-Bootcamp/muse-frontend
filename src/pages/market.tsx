@@ -1,5 +1,5 @@
 import styles from '@/styles/Home.module.css'
-import { Navbar, Footer, NftCard } from '@/components'
+import { Navbar, Footer, NftCard } from '@/components/nfts'
 
 import {
   Box,
