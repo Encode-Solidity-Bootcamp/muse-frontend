@@ -29,43 +29,37 @@ import {
   Spinner,
 } from '@chakra-ui/react'
 import Link from 'next/link'
-import { useState } from 'react';
-import { pushImgToStorage, putJSONandGetHash } from '@/utils';
+import { useState } from 'react'
+import { pushImgToStorage, putJSONandGetHash } from '@/utils'
 
 import { prepareWriteContract, writeContract } from '@wagmi/core'
-import { ARTIST_ABI, ARTIST_CONTRACT_ADDRESS } from '@/contracts/constants';
- 
+import { ARTIST_ABI, ARTIST_CONTRACT_ADDRESS } from '@/contracts/constants'
 
 type ImageState = {
-  file: File | null;
-  previewUrl: string | null;
-};
-
-
-
-
-
+  file: File | null
+  previewUrl: string | null
+}
 
 export default function CallToActionWithAnnotation() {
   const toast = useToast()
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [artistImage, setArtistImage] = useState<ImageState>({
     file: null,
     previewUrl: null,
-  });
-  const [artistImageUrl, setArtistImageUrl] = useState('');
-  const [artistName, setArtistName] =  useState('');
-  const [bio, setBio] =  useState('');
+  })
+  const [artistImageUrl, setArtistImageUrl] = useState('')
+  const [artistName, setArtistName] = useState('')
+  const [bio, setBio] = useState('')
   const [artistInfoHash, setArtistInfoHash] = useState('')
 
   const [loading, setLoading] = useState(false)
-  const isErrorA = artistName === '';
-  const isErrorB = bio === '';
+  const isErrorA = artistName === ''
+  const isErrorB = bio === ''
   const handleArtistImageChange = (e: any) => {
-    setArtistImage(e.target.files[0]);
-    setArtistImageUrl(URL.createObjectURL(e.target.files[0]));
-  };
-  const toastError =(msg: string) => {
+    setArtistImage(e.target.files[0])
+    setArtistImageUrl(URL.createObjectURL(e.target.files[0]))
+  }
+  const toastError = (msg: string) => {
     return toast({
       title: msg,
       status: 'error',
@@ -74,7 +68,7 @@ export default function CallToActionWithAnnotation() {
     })
   }
 
-  const toastSuccess =(msg: string, description: string) => {
+  const toastSuccess = (msg: string, description: string) => {
     return toast({
       title: msg,
       description: description,
@@ -84,48 +78,43 @@ export default function CallToActionWithAnnotation() {
     })
   }
 
-  
-
   const handleCreateArtist = async (e: any) => {
-
-    e.preventDefault();
+    e.preventDefault()
 
     try {
+      if (!artistImageUrl) return toastError('No Image')
 
-      if(!artistImageUrl)return toastError('No Image') 
+      if (!artistName) return toastError('Please fill in name')
+      if (!bio) return toastError('Please fill in Bio')
 
-      if(!artistName)return toastError('Please fill in name')
-      if(!bio)return toastError('Please fill in Bio')
-      
-     
-      if(artistImage && artistImageUrl) {
-        setLoading(true);
-       
-        const imgHash = await pushImgToStorage(artistImage);
+      if (artistImage && artistImageUrl) {
+        setLoading(true)
+
+        const imgHash = await pushImgToStorage(artistImage)
         const artistObj = {
           artistName,
           bio,
-          imgHash
+          imgHash,
         }
-  
-        const artistHash = await putJSONandGetHash(artistObj);
-     
-        setArtistInfoHash(artistHash);
-        
-          const config = await prepareWriteContract({
-            address: ARTIST_CONTRACT_ADDRESS,
-            abi: ARTIST_ABI,
-            functionName: 'newArtistSignup',
-            args: [artistInfoHash]
-          })
-          const data = await writeContract(config);
-          data.wait();
-          if(data) {
-            toastSuccess('Account Created', 'Welcome Onboard');
-          }
-        
-        onClose();
-       
+
+        const artistHash = await putJSONandGetHash(artistObj)
+
+        setArtistInfoHash(artistHash)
+
+        const config = await prepareWriteContract({
+          address: ARTIST_CONTRACT_ADDRESS,
+          abi: ARTIST_ABI,
+          functionName: 'newArtistSignup',
+          args: [artistInfoHash],
+        })
+        const data = await writeContract(config)
+        data.wait()
+        if (data) {
+          toastSuccess('Account Created', 'Welcome Onboard')
+        }
+
+        onClose()
+
         setArtistImage({
           file: null,
           previewUrl: null,
@@ -133,59 +122,56 @@ export default function CallToActionWithAnnotation() {
         setArtistName('')
         setBio('')
         setArtistImageUrl('')
-        setLoading(false);
+        setLoading(false)
       }
-      
     } catch (error) {
       console.log(error)
       toastError('Account Exist please proceed!')
       setLoading(false)
-      onClose();
-       
-        setArtistImage({
-          file: null,
-          previewUrl: null,
-        })
-        setArtistName('')
-        setBio('')
-        setArtistImageUrl('')
-        setLoading(false);
-      
-     
-      
-    }
-    
-   
- 
-   
-    
+      onClose()
 
- 
+      setArtistImage({
+        file: null,
+        previewUrl: null,
+      })
+      setArtistName('')
+      setBio('')
+      setArtistImageUrl('')
+      setLoading(false)
+    }
   }
   return (
     <>
-    <Modal isOpen={loading} onClose={()=>{!loading}} isCentered>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalBody>
-        <Center><Spinner  thickness='4px'
-  speed='0.65s'
-  emptyColor='gray.200'
-  color='blue.500'
-  size='xl' /></Center>
-        </ModalBody>
-        
-        
-      </ModalContent>
-    </Modal>
-       
+      <Modal
+        isOpen={loading}
+        onClose={() => {
+          !loading
+        }}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalBody>
+            <Center>
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+              />
+            </Center>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
       <Head>
         <link
           href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap"
           rel="stylesheet"
         />
       </Head>
-  
+
       <Container maxW={'3xl'}>
         <Stack
           as={Box}
@@ -230,19 +216,18 @@ export default function CallToActionWithAnnotation() {
             >
               Artist
             </Button>
-            <Link href={'/market'}><Button
-              colorScheme={'purple'}
-              bg={'purple.300'}
-              rounded={'full'}
-              
-              _hover={{
-                bg: 'purple.500',
-              }}
-            >
-              Explore
-            </Button>
+            <Link href={'/market'}>
+              <Button
+                colorScheme={'purple'}
+                bg={'purple.300'}
+                rounded={'full'}
+                _hover={{
+                  bg: 'purple.500',
+                }}
+              >
+                Explore
+              </Button>
             </Link>
-            
           </Stack>
         </Stack>
       </Container>
@@ -253,72 +238,76 @@ export default function CallToActionWithAnnotation() {
           <ModalHeader>Signup as an Artist</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-          <FormControl id="image" >
-        <FormLabel> Image</FormLabel>
-        <Stack direction={['column', 'row']} spacing={6}>
-          <Center>
-          <Input
-          placeholder="Image"
-          _placeholder={{ color: 'gray.500' }}
-          type="file"
-          onChange={handleArtistImageChange}
-        />
-           <br />
-        {artistImageUrl && <Avatar size='md' p={2} name={artistName} src={artistImageUrl} />}
-            
-          </Center>
-         
-        </Stack>
-      </FormControl>
-      <FormControl id="userName" isRequired isInvalid={isErrorA}>
-        <FormLabel>Name</FormLabel>
-        <Input
-          placeholder="your name"
-          _placeholder={{ color: 'gray.500' }}
-          type="text"
-          required
-          onChange={(e)=> {setArtistName(e.target.value)}}
-          
-        />
-          {!isErrorA ? (
-        <FormHelperText>
-          
-        </FormHelperText>
-      ) : (
-        <FormErrorMessage>Name is required.</FormErrorMessage>
-      )}
-      </FormControl>
-      
-      <FormControl id="description" isRequired isInvalid={isErrorB}>
-        <FormLabel>About you</FormLabel>
-        <Input
-          placeholder="you you you!"
-          _placeholder={{ color: 'gray.500' }}
-          type="text"
-          required
-          onChange={(e)=> {setBio(e.target.value)}}
-        />
-        {!isErrorB ? (
-        <FormHelperText>
-          
-        </FormHelperText>
-      ) : (
-        <FormErrorMessage>Bio is required.</FormErrorMessage>
-      )}
-      </FormControl>
+            <FormControl id="image">
+              <FormLabel> Image</FormLabel>
+              <Stack direction={['column', 'row']} spacing={6}>
+                <Center>
+                  <Input
+                    placeholder="Image"
+                    _placeholder={{ color: 'gray.500' }}
+                    type="file"
+                    onChange={handleArtistImageChange}
+                  />
+                  <br />
+                  {artistImageUrl && (
+                    <Avatar
+                      size="md"
+                      p={2}
+                      name={artistName}
+                      src={artistImageUrl}
+                    />
+                  )}
+                </Center>
+              </Stack>
+            </FormControl>
+            <FormControl id="userName" isRequired isInvalid={isErrorA}>
+              <FormLabel>Name</FormLabel>
+              <Input
+                placeholder="your name"
+                _placeholder={{ color: 'gray.500' }}
+                type="text"
+                required
+                onChange={(e) => {
+                  setArtistName(e.target.value)
+                }}
+              />
+              {!isErrorA ? (
+                <FormHelperText></FormHelperText>
+              ) : (
+                <FormErrorMessage>Name is required.</FormErrorMessage>
+              )}
+            </FormControl>
 
+            <FormControl id="description" isRequired isInvalid={isErrorB}>
+              <FormLabel>About you</FormLabel>
+              <Input
+                placeholder="you you you!"
+                _placeholder={{ color: 'gray.500' }}
+                type="text"
+                required
+                onChange={(e) => {
+                  setBio(e.target.value)
+                }}
+              />
+              {!isErrorB ? (
+                <FormHelperText></FormHelperText>
+              ) : (
+                <FormErrorMessage>Bio is required.</FormErrorMessage>
+              )}
+            </FormControl>
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant='ghost' onClick={handleCreateArtist}>SignUp</Button>
+            <Button variant="ghost" onClick={handleCreateArtist}>
+              SignUp
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
     </>
-
   )
 }
 
