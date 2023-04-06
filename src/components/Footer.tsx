@@ -59,13 +59,13 @@ const Footer = () => {
       >
         <Text>© 2023 Svati. All rights reserved</Text>
         <Stack direction={'row'} spacing={6}>
-          <SocialButton label={'Twitter'} href={'#'}>
+          <SocialButton label={'Twitter'} href={'https://twitter.com/svati_io'}>
             <FaTwitter />
           </SocialButton>
           <SocialButton label={'YouTube'} href={'#'}>
             <FaYoutube />
           </SocialButton>
-          <SocialButton label={'Instagram'} href={'#'}>
+          <SocialButton label={'Instagram'} href={'https://instagram.com/svati_io?igshid=YmMyMTA2M2Y='}>
             <FaInstagram />
           </SocialButton>
         </Stack>
