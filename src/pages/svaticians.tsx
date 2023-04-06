@@ -26,7 +26,10 @@ type Artist = {
  
 }
 interface ContractData {
+  id: number;
+  artistAddress: string;
   artistDetails: string;
+  
 } 
 
 const IMAGE = 'https://cdn.punchng.com/wp-content/uploads/2022/12/18034549/Davido-1.jpg'
@@ -34,17 +37,17 @@ const IMAGE = 'https://cdn.punchng.com/wp-content/uploads/2022/12/18034549/David
 
 
 export default function ArtistsPage() {
-  const [artistInfo, setArtistInfo] = useState([]);
+  const [artistInfo, setArtistInfo] = useState<ContractData[]>([]);
 
   const getArtists = async ()=>{
     try {
      
-        const data: ContractData = await readContract({
+        const data: ContractData[] = await readContract({
           address: ARTIST_CONTRACT_ADDRESS,
           abi: ARTIST_ABI,
           functionName: 'getAllArtists',
           
-        }) as ContractData;
+        }) as ContractData[];
         setArtistInfo(data)
   
     
