@@ -584,7 +584,7 @@ export const COLLECTION_ABI = [
   },
 ]
 export const ARTIST_CONTRACT_ADDRESS =
-  '0x09DB8F52868C03AfF1438d98Fea1889984A94932'
+  '0x1F0544BAF1C38A5b29F4D49F0aF5d16ac27dF67b'
 export const ARTIST_ABI = [
   {
     inputs: [],
@@ -808,7 +808,7 @@ export const ARTIST_ABI = [
   },
 ]
 export const FACTORY_CONTRACT_ADDRESS =
-  '0xa91b31f3ae71c1da86938c38406a16d6016e57b0'
+  '0x573519BE4166dF0A1c36e34876Fe4B1Fe6B0CE08'
 export const FACTORY_ABI = [
   {
     inputs: [
